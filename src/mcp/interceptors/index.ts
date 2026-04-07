@@ -13,6 +13,7 @@ import { bizErrorInterceptor } from "./biz-error.js";
 import { mediaInterceptor } from "./msg-media.js";
 import { smartpageCreateInterceptor } from "./smartpage-create.js";
 import { smartpageExportInterceptor } from "./smartpage-export.js";
+import { contactSearchInterceptor } from "./contact-search.js";
 import type { CallContext, CallInterceptor, BeforeCallOptions } from "./types.js";
 import type { SendJsonRpcOptions } from "../transport.js";
 
@@ -27,6 +28,7 @@ const interceptors: CallInterceptor[] = [
   mediaInterceptor,            // get_msg_media base64 拦截
   smartpageCreateInterceptor,  // smartpage_create 本地文件读取
   smartpageExportInterceptor,  // smartpage_get_export_result content → 本地文件
+  contactSearchInterceptor,    // contact get_userlist 关键词过滤
 ];
 
 // ============================================================================
