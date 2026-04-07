@@ -13,7 +13,7 @@ description: 企业微信待办详情批量查询技能，根据待办 ID 列表
 
 ## 行为策略
 
-**人员 ID 转姓名（关键步骤）**: 返回结果中的 `follower_id` 和 `creator_id` 都是系统内部 ID，直接展示给用户毫无意义——用户不认识这些 ID，只认识姓名。因此在向用户展示待办详情之前，必须先调用 `wecom-contact-lookup` 技能，提取待办详情中的 follower_id / creator_id，如果需要向用户展示对应的姓名，请使用 `wecom_mcp` tool 调用 `wecom_mcp call contact get_userlist '{"keyword": "<已知的部分姓名或直接使用该ID让系统匹配>"}'` 获取对应姓名。
+**人员 ID 转姓名（关键步骤）**: 返回结果中的 `follower_id` 和 `creator_id` 都是系统内部 ID，直接展示给用户毫无意义——用户不认识这些 ID，只认识姓名。因此在向用户展示待办详情之前，必须先调用 `wecom-contact-lookup` 技能，根据上下文中已知的姓名关键词，使用 `wecom_mcp` tool 调用 `wecom_mcp call contact get_userlist '{"keyword": "<已知的姓名关键词>"}'` 获取对应成员信息，再将返回的 `userid` 与 `follower_id` / `creator_id` 匹配，取 `name` 字段作为展示姓名。
 
 如果通讯录中找不到某个 ID，展示时标注"未知用户(ID: xxx)"即可。
 
@@ -93,7 +93,7 @@ description: 企业微信待办详情批量查询技能，根据待办 ID 列表
 
 1. 第一步：通过 wecom-get-todo-list 获取待办列表。使用 `wecom_mcp` tool 调用 `wecom_mcp call todo get_todo_list '{}'`
 2. 第二步：根据返回的 todo_id 批量获取详情。使用 `wecom_mcp` tool 调用 `wecom_mcp call todo get_todo_detail '{"todo_id_list": ["TODO_ID_1", "TODO_ID_2", "TODO_ID_3"]}'`
-3. 第三步（不要跳过！）：通过 wecom-contact-lookup 获取对应人员姓名。提取待办详情中的 follower_id / creator_id，如果需要向用户展示对应的姓名，请使用 `wecom_mcp` tool 调用 `wecom_mcp call contact get_userlist '{"keyword": "<已知的部分姓名或直接使用该ID让系统匹配>"}'` 获取对应姓名，用返回的 userlist 中的 userid 匹配 follower_id 和 creator_id，取 name 字段作为展示姓名
+3. 第三步（不要跳过！）：通过 wecom-contact-lookup 获取对应人员姓名。根据上下文中已知的姓名关键词，使用 `wecom_mcp` tool 调用 `wecom_mcp call contact get_userlist '{"keyword": "<已知的姓名关键词>"}'` 获取对应姓名，用返回的 userlist 中的 userid 匹配 follower_id 和 creator_id，取 name 字段作为展示姓名
 
 > 第三步是展示可读结果的前提。没有这一步，用户看到的是一串无意义的 ID 而非姓名。
 
@@ -124,7 +124,7 @@ description: 企业微信待办详情批量查询技能，根据待办 ID 列表
 
 1. **人员 ID 必须转姓名**
    - 返回结果中的 `follower_id` 和 `creator_id` 是系统内部标识，用户无法识别
-   - 展示待办详情前，先提取相关 ID，使用 `wecom_mcp` tool 调用 `wecom_mcp call contact get_userlist '{"keyword": "<姓名关键词>"}'` 获取通讯录
+   - 展示待办详情前，根据上下文中已知的姓名关键词，使用 `wecom_mcp` tool 调用 `wecom_mcp call contact get_userlist '{"keyword": "<已知的姓名关键词>"}'` 获取通讯录
    - 用通讯录的 `userid` 匹配 `follower_id` / `creator_id`，用 `name` 替换展示
 
 2. **todo_id 来源规则**
