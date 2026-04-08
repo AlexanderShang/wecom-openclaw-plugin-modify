@@ -113,11 +113,10 @@ wecom-meeting-create 提供企业微信预约会议的创建能力, 支持设置
 **步骤:**
 
 1. **解析用户意图**: 有邀请人, 需先查询通讯录获取 userid.
-2. **通讯录查询**: 调用 `wecom-contact-lookup` 技能获取通讯录成员, 按姓名筛选出参与者的 userid.
-
-使用 `wecom_mcp` tool 调用 `wecom_mcp call contact get_userlist '{}'`
-
-在返回的 `userlist` 中筛选 `name` 包含 "张三" 和 "李四" 的成员, 获取其 `userid`.
+2. **通讯录精准查询**: 调用 `wecom-contact-lookup` 技能搜索通讯录成员，获取参与者的 userid。
+针对张三：使用 `wecom_mcp` tool 调用 `wecom_mcp call contact get_userlist '{"keyword": "张三"}'`
+针对李四：使用 `wecom_mcp` tool 调用 `wecom_mcp call contact get_userlist '{"keyword": "李四"}'`
+收集返回结果中的 `userid`。
 
 3. **信息已充分, 直接调用创建命令** (禁止暴露内部 ID):
 
@@ -153,6 +152,6 @@ wecom-meeting-create 提供企业微信预约会议的创建能力, 支持设置
 ## 注意事项
 
 - **信息追问**: 缺少时间或主题时, 简洁追问用户; 未提及邀请人则默认留空
-- **通讯录查询**: 涉及参与人时, 需先通过 `wecom-contact-lookup` 技能的 `get_userlist` 接口获取全量通讯录成员, 再按姓名/别名本地筛选匹配出对应的 `userid`. 该接口无入参, 返回当前用户可见范围内的成员列表 (含 `userid`, `name`, `alias`)
+- **通讯录查询**: 涉及参与人时，需通过 `wecom-contact-lookup` 技能的 `get_userlist` 接口按关键词精准搜索，**必须传入 `keyword` 参数**（如 `'{"keyword": "张三"}'`），分别为每位参与人发起搜索，收集返回的 `userid`。禁止传入空对象 `{}`
 - **直接创建**: 时间 + 主题已知即可直接创建, 邀请人有则带上, 无则留空; 无论信息是一次性提供还是上下文可推断, 非必要则均不请求确认, 直接创建即可
 - **时间格式**: 统一使用 `YYYY-MM-DD HH:mm` 格式

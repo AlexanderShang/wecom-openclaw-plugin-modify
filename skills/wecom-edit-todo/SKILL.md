@@ -153,7 +153,7 @@ description: 企业微信待办事项编辑技能，支持创建、更新、删�
 
 用户问："帮我创建一个待办，让张三下周一前完成需求文档"
 
-1. 第一步：通过 wecom-contact-lookup 技能查询张三的 userid，在返回结果中筛选姓名为"张三"的成员，获取其 userid
+1. 第一步：通过 wecom-contact-lookup 技能精准搜索张三的 userid。使用 `wecom_mcp` tool 调用 `wecom_mcp call contact get_userlist '{"keyword": "张三"}'`，从返回结果中获取其 userid。
 2. 第二步：创建待办并分派，使用 `wecom_mcp` tool 调用 `wecom_mcp call todo create_todo '{"content": "<待办的内容>", "follower_list": {"followers": [{"follower_id": "zhangsan", "follower_status": 1}]}, "remind_time": "2025-03-24 09:00:00"}'`
 
 > `follower_id` 必须来自 `wecom-contact-lookup` 技能的 `get_userlist` 接口返回的 `userid`，禁止自行猜测。若搜索结果有多个同名人员，需展示候选列表让用户确认。
